@@ -4,16 +4,16 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-public class CasinoBot extends TelegramLongPollingBot {
+public class GameBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return "Casino bot";
+        return "MMgames26_bot";
     }
 
     @Override
     public String getBotToken() {
-        return "8958830100:AAGuS3OPtzs3yTcxDk1b-TEbZSRZPkX-pVU";
+        return System.getenv("BOT_TOKEN");
     }
 
     @Override
