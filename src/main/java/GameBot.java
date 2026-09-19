@@ -5,6 +5,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 public class GameBot extends TelegramLongPollingBot {
+    private CommandHandler handler = new CommandHandler(this);
 
     @Override
     public String getBotUsername() {
@@ -18,24 +19,18 @@ public class GameBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        if (update.hasMessage()) {
-            Message message = update.getMessage();
-            System.out.println("пришло: " + update.getMessage().getText());
-
-            SendMessage sendMessageRequest = new SendMessage();
-            sendMessageRequest.setChatId(message.getChatId().toString());
-            sendMessageRequest.setText("пришло: " + message.getText());
-
-            SendMessage sendMessageBack = new SendMessage();
-            sendMessageBack.setChatId(message.getChatId().toString());
-            System.out.println("отправлено сообщение " + message.getText() + " + тест: ");
-            sendMessageBack.setText(message.getText() + " тест");
-
-            try{
-                execute(sendMessageBack);
-            } catch(TelegramApiException e){
-                System.out.println(e);
-            }
+        handler.handle(update);
+    }
+    public void sendText(long chatId, String text){
+        SendMessage message = new SendMessage();
+        message.setChatId(String.valueOf(chatId));
+        message.setText(text);
+        System.out.println("[" + chatId + "]" + " отправлено: " + message.getText());
+        try{
+            execute(message);
+        } catch(TelegramApiException e){
+            System.out.println(e);
         }
     }
+
 }
