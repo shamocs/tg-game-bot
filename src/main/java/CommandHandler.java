@@ -6,6 +6,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.games.Game;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.util.Locale;
+
 public class CommandHandler {
     private GameBot bot;
     private Texts texts = new Texts();
@@ -14,7 +16,7 @@ public class CommandHandler {
     }
     public void handle(Update update){
         if(update.hasMessage() && update.getMessage().hasText()){
-            String text = update.getMessage().getText();
+            String text = update.getMessage().getText().toLowerCase(Locale.ROOT);
             long chatId = update.getMessage().getChatId();
             System.out.println("[" + chatId + "]" + " получено: " + text);
             if(text.startsWith("/help ")){
