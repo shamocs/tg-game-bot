@@ -1,3 +1,5 @@
+import org.w3c.dom.Text;
+
 public class Texts {
     private String about = "🃏 Игровой бот tg-game-bot — это твоя личная игровая комната в Telegram!\n\n" +
             "Классические карточные игры, быстрые партии и увлекательные сценарии в одном месте. " +
@@ -24,6 +26,18 @@ public class Texts {
 
     public String getAuthors() {
         return authors;
+    }
+    public String getHelpOn(String arg) {
+        switch (arg) {
+            case "help":
+                return getHelpHelp();
+            case "about":
+                return getHelpAbout();
+            case "authors":
+                return getHelpAuthors();
+            default:
+                return "Нет справки по команде " + arg;
+        }
     }
 
     public String getHelp() {
