@@ -9,8 +9,4 @@ public class AuthorsCommand implements Command {
     public String getName(){
         return "/authors";
     }
-    @Override
-    public String getDescription(){
-        return "Создатели студенты Кб-202: \n Юрочкин Егор и Медведев Данил";
-    }
 }

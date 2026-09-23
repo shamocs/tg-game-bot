@@ -13,13 +13,4 @@ public class HelpCommand implements Command {
     public String getName() {
         return "/help";
     }
-
-    @Override
-    public String getDescription() {
-        return "\"Доступные команды:\\n\" +\n" +
-                "            \"/help — выводит список всех команд\\n\" +\n" +
-                "            \"/about — краткая информация о боте\\n\" +\n" +
-                "            \"/authors — информация об авторах проекта\\n\\n\" +\n" +
-                "            \"Чтобы узнать подробнее о команде, введите: \\n /help [имя_команды]\"";
-    }
 }

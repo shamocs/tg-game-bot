@@ -36,10 +36,7 @@ public class CommandHandler {
             bot.sendText(chatId, "Неизвестная команда. Напиши /help");
             return;
         }
-
         bot.sendText(chatId, cmd.execute(arg));
-
-
 
     }
 }
