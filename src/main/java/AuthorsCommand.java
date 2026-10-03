@@ -9,4 +9,8 @@ public class AuthorsCommand implements Command {
     public String getName(){
         return "/authors";
     }
+    @Override
+    public String getHelp(){
+        return "👥 *Справка по команде /authors:*\nВыводит информацию об авторах проекта — разработчиках из группы Кб-202.";
+    }
 }

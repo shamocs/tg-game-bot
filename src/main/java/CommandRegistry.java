@@ -1,18 +1,24 @@
+import java.util.Collection;
 import java.util.HashMap;
 
-public class CommandRegistry{
-    private HashMap<String,Command> commands = new HashMap<>();
+public class CommandRegistry {
+    private HashMap<String, Command> commands = new HashMap<>();
 
     public CommandRegistry() {
-        registerCommand(new HelpCommand());
+        registerCommand(new HelpCommand(this));
         registerCommand(new AuthorsCommand());
         registerCommand(new AboutCommand());
     }
-    public void registerCommand(Command command){
-        commands.put(command.getName(),command);
+
+    public void registerCommand(Command command) {
+        commands.put(command.getName(), command);
     }
+
     public Command getCommand(String name) {
         return commands.get(name);
     }
 
+    public Collection<Command> getAll() {
+        return commands.values();
+    }
 }

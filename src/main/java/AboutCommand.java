@@ -10,4 +10,9 @@ public class AboutCommand implements Command {
         return "/about";
     }
 
+    @Override
+    public String getHelp(){
+        return "ℹ️ *Справка по команде /about:*\nПоказывает информацию об игровом боте, доступных жанрах игр и правилах.";
+    }
+
 }
