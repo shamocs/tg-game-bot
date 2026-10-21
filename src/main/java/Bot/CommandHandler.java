@@ -48,14 +48,12 @@ public class CommandHandler {
         System.out.println("[" + chatId + "] получено: " + text);
         if (sessions.hasActive(chatId)) {
             GameSession session = sessions.get(chatId);
-
             if (text.equals("/cancel")) {
                 sessions.remove(chatId);
                 Command help = registry.getCommand("/help");
                 if (help != null) {
                     bot.sendText(chatId, help.execute(chatId, ""));
-                } else {
-                    bot.sendText(chatId, "Вышел из игры.");
+                    sessions.transition(chatId,BotState.IDLE);
                 }
                 return;
             }
@@ -75,6 +73,11 @@ public class CommandHandler {
                 sessions.transition(chatId, BotState.WAITING_FOR_MOVE);
                 bot.sendText(chatId, gameService.startGame(gameId, chatId));
                 bot.sendText(chatId,"waiting for your move!");
+                return;
+            }
+            if (text.equals("/lose")){
+                LoseCommand lose = new LoseCommand(sessions,bot);
+                lose.execute(chatId,"");
                 return;
             }
             String reply = gameService.handleMove("blackjack", chatId, text);
