@@ -1,8 +1,7 @@
 public class AboutCommand implements Command {
     private final Texts texts = new Texts();
     @Override
-    public String execute(String arg){
-
+    public String execute(long chatId,String arg){
         return texts.getAbout();
     }
     @Override

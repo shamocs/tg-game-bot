@@ -1,5 +1,5 @@
 public interface Command {
-    String execute(String arg);
+    String execute(long chatId, String arg);
     String getName();
     String getHelp();
 }

@@ -6,7 +6,7 @@ public class HelpCommand implements Command {
     }
 
     @Override
-    public String execute(String arg) {
+    public String execute(long chatId,String arg) {
         if (arg != null && !arg.isEmpty()) {
             Command cmd = registry.getCommand(arg.startsWith("/") ? arg : "/" + arg);
             if (cmd == null) return "Команда не найдена: " + arg;
