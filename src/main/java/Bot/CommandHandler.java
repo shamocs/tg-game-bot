@@ -53,7 +53,6 @@ public class CommandHandler {
                 Command help = registry.getCommand("/help");
                 if (help != null) {
                     bot.sendText(chatId, help.execute(chatId, ""));
-                    sessions.transition(chatId,BotState.IDLE);
                 }
                 return;
             }
