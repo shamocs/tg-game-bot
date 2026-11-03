@@ -1,3 +1,5 @@
+package BotServices;
+
 import java.time.Instant;
 
 public class GameSession {

@@ -1,3 +1,9 @@
+package Commands;
+
+import BotServices.BotState;
+import BotServices.SessionManager;
+import BotServices.GameService;
+
 public class PlayCommand implements Command {
 
     private final SessionManager sessions;

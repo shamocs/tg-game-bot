@@ -1,3 +1,5 @@
+package Commands;
+
 public class AboutCommand implements Command {
     private final Texts texts = new Texts();
     @Override

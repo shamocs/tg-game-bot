@@ -1,7 +1,11 @@
+package BotServices;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import Games.Game;
+import Games.BlackJack;
 
 public class GameService {
     private final Map<String, Game> games = new LinkedHashMap<>();

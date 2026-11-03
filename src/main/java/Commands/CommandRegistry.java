@@ -1,4 +1,7 @@
+package Commands;
 
+import BotServices.SessionManager;
+import BotServices.GameService;
 import java.util.Collection;
 import java.util.HashMap;
 

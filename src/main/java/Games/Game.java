@@ -1,3 +1,5 @@
+package Games;
+
 public interface Game {
     String getName();
     String start(long userId);

@@ -1,3 +1,7 @@
+package Commands;
+
+import BotServices.SessionManager;
+
 public class CancelCommand implements Command {
 
     private final SessionManager sessions;

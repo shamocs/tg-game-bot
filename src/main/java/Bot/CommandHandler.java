@@ -1,4 +1,16 @@
+
+package Bot;
+
 import org.telegram.telegrambots.meta.api.objects.Update;
+import BotServices.SessionManager;
+import BotServices.GameService;
+import Commands.CommandRegistry;
+import BotServices.GameSession;
+import BotServices.BotState;
+import Commands.Command;
+import Commands.LoseCommand;
+
+import java.util.Locale;
 
 import java.util.Locale;
 

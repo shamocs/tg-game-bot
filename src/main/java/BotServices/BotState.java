@@ -1,3 +1,5 @@
+package BotServices;
+
 public enum BotState {
     IDLE,
     CHOOSING_GAME,
