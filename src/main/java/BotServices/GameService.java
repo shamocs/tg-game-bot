@@ -16,13 +16,13 @@ public class GameService {
     }
 
     public String getGamesList() {
-        StringBuilder sb = new StringBuilder();
+        String result = "";
         int i = 1;
         for (String gameId : games.keySet()) {
-            sb.append(i).append(") ").append(gameId).append("\n");
-            i++;
+            result = result + i + ") " + gameId + "\n";
+            i += 1;
         }
-        return sb.toString();
+        return result;
     }
 
     public String startGame(String gameId, long userId) {

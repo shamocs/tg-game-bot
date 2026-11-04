@@ -72,14 +72,17 @@ public class CommandHandler {
     private void handleCancel(long chatId) {
         sessions.remove(chatId);
         Command help = registry.getCommand("/help");
-        bot.sendText(chatId, help != null ? help.execute(chatId, "") : "Вышел из игры.");
+        bot.sendText(chatId, "Вышел из игры.");
+        bot.sendText(chatId,help.execute(chatId,""));
     }
 
     private void handleChoosing(long chatId, String text) {
         String gameId;
         switch (text) {
-            case "1": gameId = "blackjack"; break;
-            case "2": gameId = "other"; break;
+            case "1": gameId = "blackjack";
+            break;
+            case "2": gameId = "other";
+            break;
             default:
                 bot.sendText(chatId, "Выберите номер игры!");
                 return;
