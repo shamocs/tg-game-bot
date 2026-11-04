@@ -46,28 +46,41 @@ public class CommandHandler {
         parseCommand(chatId, text);
     }
 
-
     private void handleActive(long chatId, String text) {
         GameSession session = sessions.get(chatId);
+        switch (session.getState()) {
+            case CHOOSING_GAME:
+                if (text.equals("/cancel")) {
+                    handleCancel(chatId);
+                } else if (text.equals("/lose")) {
+                    handleLose(chatId);
+                } else {
+                    handleChoosing(chatId, text);
+                }
+                break;
 
-        if (text.equals("/cancel")) {
-            handleCancel(chatId);
-            return;
+            case WAITING_FOR_MOVE:
+                if (text.equals("/cancel")) {
+                    handleCancel(chatId);
+                } else if (text.equals("/lose")) {
+                    handleLose(chatId);
+                } else {
+                    handleMove(chatId, text);
+                }
+                break;
+
+            case GAME_OVER:
+                if (text.equals("/cancel")) {
+                    handleCancel(chatId);
+                } else {
+                    handleGameOver(chatId, text);
+                }
+                break;
+
         }
-        if (session.getState() == BotState.CHOOSING_GAME) {
-            handleChoosing(chatId, text);
-            return;
-        }
-        if (text.equals("/lose")) {
-            handleLose(chatId);
-            return;
-        }
-        if (session.getState() == BotState.GAME_OVER) {
-            handleGameOver(chatId, text);
-            return;
-        }
-        handleMove(chatId, text);
     }
+
+
 
     private void handleCancel(long chatId) {
         sessions.remove(chatId);
