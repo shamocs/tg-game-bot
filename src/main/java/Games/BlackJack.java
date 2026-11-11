@@ -22,7 +22,7 @@ public class BlackJack implements Game {
 
         session.setGameContext(state);
 
-        return "🃏 Блэкджек начался!\n" +
+        return "Блэкджек начался!\n" +
                 "Твои карты: " + state.playerCards + " (Очки: " + calculateScore(state.playerCards) + ")\n" +
                 "Карта дилера: " + state.dealerCards.get(0) + "\n" +
                 "Напиши 'взять' или 'хватит'.";
@@ -53,10 +53,10 @@ public class BlackJack implements Game {
 
             String result = "Твои очки: " + playerScore + "\nКарты дилера: " + state.dealerCards + " (Очки: " + dealerScore + ")\n";
 
-            if (dealerScore > 21) return result + "🎉 Дилер перебрал! Ты выиграл!";
-            else if (playerScore > dealerScore) return result + "🎉 Ты выиграл!";
-            else if (playerScore < dealerScore) return result + "💀 Дилер выиграл.";
-            else return result + "🤝 Ничья.";
+            if (dealerScore > 21) return result + "Дилер перебрал! Ты выиграл!";
+            else if (playerScore > dealerScore || playerScore == 21) return result + "Ты выиграл!";
+            else if (playerScore < dealerScore || dealerScore == 21) return result + "Дилер выиграл.";
+            else return result + "Ничья.";
         }
 
         return "Напиши 'взять' или 'хватит'.";
