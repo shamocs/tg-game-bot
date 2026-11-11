@@ -62,7 +62,7 @@ public class BlackJack implements Game {
         return "Напиши 'взять' или 'хватит'.";
     }
 
-    private int calculateScore(java.util.List<Card> cards) {
+    int calculateScore(java.util.List<Card> cards) {
         int score = 0;
         int aces = 0;
         for (Card c : cards) {
