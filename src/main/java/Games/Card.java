@@ -13,4 +13,15 @@ public class Card {
     public String toString(){
         return rank + suit;
     }
+
+    public int getPoints(){
+        return points;
+    }
+    public String getRank() {
+        return rank;
+    }
+    public String getSuit() {
+        return suit;
+    }
+
 }

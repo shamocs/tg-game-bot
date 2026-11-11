@@ -4,13 +4,15 @@ import Games.Game;
 import Games.BlackJack;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import Games.RideTheBus;
+
 
 public class GameService {
     private final Map<String, Game> games = new LinkedHashMap<>();
 
     public GameService() {
         games.put("blackjack", new BlackJack());
-        games.put("other", new BlackJack());
+        games.put("ride the bus", new RideTheBus());
     }
 
     public String getGamesList() {

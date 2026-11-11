@@ -70,7 +70,6 @@ public class CommandHandler {
                 break;
 
             case GAME_OVER:
-
                 if (text.equals("/cancel")) {
                     handleCancel(chatId);
                 } else {
@@ -95,7 +94,7 @@ public class CommandHandler {
         switch (text) {
             case "1": gameId = "blackjack";
             break;
-            case "2": gameId = "other";
+            case "2": gameId = "ride the bus";
             break;
             default:
                 bot.sendText(chatId, "Выберите номер игры!");
@@ -104,6 +103,7 @@ public class CommandHandler {
         sessions.transition(chatId, BotState.WAITING_FOR_MOVE);
 
         GameSession session = sessions.get(chatId);
+        session.setCurrentGame(gameId);
         bot.sendText(chatId, gameService.startGame(gameId, session));
     }
 
@@ -113,7 +113,6 @@ public class CommandHandler {
     }
 
     private void handleGameOver(long chatId, String text) {
-        // 1. Игрок хочет выбрать другую игру
         if (text.equals("/play")) {
             sessions.transition(chatId, BotState.CHOOSING_GAME);
             bot.sendText(chatId, "Выбери игру:\n" + gameService.getGamesList());
@@ -123,7 +122,8 @@ public class CommandHandler {
         if (text.equals("ещё") || text.equals("еще") || text.equals("ещё раз")) {
             sessions.transition(chatId, BotState.WAITING_FOR_MOVE);
             GameSession session = sessions.get(chatId);
-            bot.sendText(chatId, gameService.startGame("blackjack", session));
+            String gameId = session.getCurrentGame() != null ? session.getCurrentGame() : "blackjack";
+            bot.sendText(chatId, gameService.startGame(gameId, session));
             return;
         }
 
@@ -132,7 +132,14 @@ public class CommandHandler {
 
     private void handleMove(long chatId, String text) {
         GameSession session = sessions.get(chatId);
-        String reply = gameService.handleMove("blackjack", session, text);
+        String gameId = session != null ? session.getCurrentGame() : "blackjack";
+
+        if (gameId == null) {
+            bot.sendText(chatId, "Игра не начата. Введи /cancel и /play.");
+            return;
+        }
+
+        String reply = gameService.handleMove(gameId, session, text);
 
         if (reply.contains("выиграл") || reply.contains("проиграл") || reply.contains("Ничья") || reply.contains("Перебор")) {
             sessions.transition(chatId, BotState.GAME_OVER);

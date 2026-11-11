@@ -7,6 +7,7 @@ public class GameSession {
     private  BotState state;
     private  Instant lastActivity;
     private Object gameContext;
+    private String currentGame;
 
     public GameSession(long userId) {
         this.userId = userId;
@@ -16,6 +17,9 @@ public class GameSession {
     public long getUserId()          { return userId; }
     public BotState getState()       { return state; }
     public Instant getLastActivity() { return lastActivity; }
+    public String getCurrentGame()        { return currentGame; }
+
+    public void setCurrentGame(String g)  { this.currentGame = g; }
 
     public Object getGameContext()   { return gameContext; }
     public void setGameContext(Object ctx) { this.gameContext = ctx; }
