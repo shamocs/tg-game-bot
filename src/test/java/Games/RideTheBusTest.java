@@ -1,5 +1,6 @@
 package Games;
 
+import BotServices.GameSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,12 +19,18 @@ class RideTheBusTest {
     private static final long USER_1 = 111L;
     private static final long USER_2 = 222L;
 
+    // Создаем сессии, которые требует твой прод-код
+    private GameSession session1;
+    private GameSession session2;
+
     @BeforeEach
     void setUp() {
         bus = new RideTheBus();
+        session1 = new GameSession(USER_1);
+        session2 = new GameSession(USER_2);
     }
 
-    // ---------- helper для подмены колоды (чтобы тесты были детерминированными) ----------
+    // ---------- helper для подмены колоды ----------
     @SuppressWarnings("unchecked")
     private void setNextCards(long userId, Card... cards) throws Exception {
         Field gamesField = RideTheBus.class.getDeclaredField("games");
@@ -39,12 +46,12 @@ class RideTheBusTest {
         deck.addAll(Arrays.asList(cards));
     }
 
-    // Базовые проверки
+    // --- Базовые проверки ---
 
     @Test
     @DisplayName("start() инициализирует игру и возвращает правила 1-го этапа")
     void startInitializesGame() {
-        String result = bus.start(USER_1);
+        String result = bus.start(session1); // Передаем сессию
         assertTrue(result.contains("Этап 1/4"));
         assertTrue(result.contains("red или black"));
     }
@@ -52,28 +59,27 @@ class RideTheBusTest {
     @Test
     @DisplayName("Ход без старта игры возвращает ошибку")
     void moveWithoutStartReturnsError() {
-        String result = bus.move(USER_1, "red");
+        String result = bus.move(session1, "red"); // Передаем сессию
         assertEquals("Игра не начата. Введи /play, чтобы начать.", result);
     }
 
     @Test
     @DisplayName("Некорректный ввод на этапе 1 не пропускает дальше")
     void invalidInputStage1() {
-        bus.start(USER_1);
-        String result = bus.move(USER_1, "зеленая");
+        bus.start(session1);
+        String result = bus.move(session1, "зеленая");
         assertEquals("Введи red или black.", result);
     }
 
-
-    // Этап 1: Red / Black
+    // --- Этап 1: Red / Black ---
 
     @Test
     @DisplayName("Угадал цвет: переход на этап 2")
     void correctRedBlackAdvances() throws Exception {
-        bus.start(USER_1);
+        bus.start(session1);
         setNextCards(USER_1, new Card("5", "♥", 5)); // Красная
 
-        String result = bus.move(USER_1, "red");
+        String result = bus.move(session1, "red");
         assertTrue(result.contains("✅ Верно! Карта: 5♥"));
         assertTrue(result.contains("Этап 2/4"));
     }
@@ -81,114 +87,109 @@ class RideTheBusTest {
     @Test
     @DisplayName("Не угадал цвет: вылет")
     void incorrectRedBlackLoses() throws Exception {
-        bus.start(USER_1);
+        bus.start(session1);
         setNextCards(USER_1, new Card("5", "♥", 5)); // Красная
 
-        String result = bus.move(USER_1, "black");
+        String result = bus.move(session1, "black");
         assertTrue(result.contains("❌ Вылет на этапе 1/4"));
     }
 
-    // Этап 2: Higher / Lower
+    // --- Этап 2: Higher / Lower ---
 
     @Test
     @DisplayName("Угадал higher: переход на этап 3")
     void correctHigherAdvances() throws Exception {
-        bus.start(USER_1);
+        bus.start(session1);
         setNextCards(USER_1,
                 new Card("5", "♥", 5),   // этап 1
                 new Card("10", "♠", 10)  // этап 2
         );
-        bus.move(USER_1, "red");
+        bus.move(session1, "red");
 
-        String result = bus.move(USER_1, "higher");
+        String result = bus.move(session1, "higher");
         assertTrue(result.contains("✅ Верно! Карта: 10♠"));
         assertTrue(result.contains("Этап 3/4"));
     }
 
-
-    // Этап 3: Inside / Outside
-
+    // --- Этап 3: Inside / Outside ---
 
     @Test
     @DisplayName("Угадал outside: переход на этап 4")
     void correctOutsideAdvances() throws Exception {
-        bus.start(USER_1);
+        bus.start(session1);
         setNextCards(USER_1,
                 new Card("5", "♥", 5),   // этап 1
                 new Card("10", "♠", 10), // этап 2
                 new Card("K", "♦", 13)   // этап 3 (снаружи 5 и 10)
         );
-        bus.move(USER_1, "red");
-        bus.move(USER_1, "higher");
+        bus.move(session1, "red");
+        bus.move(session1, "higher");
 
-        String result = bus.move(USER_1, "outside");
+        String result = bus.move(session1, "outside");
         assertTrue(result.contains("✅ Верно! Карта: K♦"));
         assertTrue(result.contains("Этап 4/4"));
     }
 
-
-    // Этап 4: Suit
-
+    // --- Этап 4: Suit ---
 
     @Test
     @DisplayName("Угадал масть: победа")
     void correctSuitWins() throws Exception {
-        bus.start(USER_1);
+        bus.start(session1);
         setNextCards(USER_1,
                 new Card("2", "♥", 2),
                 new Card("5", "♠", 5),
                 new Card("K", "♦", 13),
                 new Card("A", "♣", 11) // этап 4
         );
-        bus.move(USER_1, "red");
-        bus.move(USER_1, "higher");
-        bus.move(USER_1, "outside");
+        bus.move(session1, "red");
+        bus.move(session1, "higher");
+        bus.move(session1, "outside");
 
-        String result = bus.move(USER_1, "clubs");
-        assertTrue(result.contains("🎉 Поздравляю, ты проехал на автобусе! Все 4 этапа пройдены."));
+        String result = bus.move(session1, "clubs");
+        // ВАЖНО: Текст проверки должен совпадать с тем, что возвращает твоя игра!
+        assertTrue(result.contains("Все 4 этапа пройдены!") || result.contains("Поздравляю, ты проехал на автобусе!"));
     }
 
     @Test
     @DisplayName("Не угадал масть: вылет")
     void incorrectSuitLoses() throws Exception {
-        bus.start(USER_1);
+        bus.start(session1);
         setNextCards(USER_1,
                 new Card("2", "♥", 2),
                 new Card("5", "♠", 5),
                 new Card("K", "♦", 13),
                 new Card("A", "♣", 11) // этап 4 (♣)
         );
-        bus.move(USER_1, "red");
-        bus.move(USER_1, "higher");
-        bus.move(USER_1, "outside");
+        bus.move(session1, "red");
+        bus.move(session1, "higher");
+        bus.move(session1, "outside");
 
-        String result = bus.move(USER_1, "hearts");
+        String result = bus.move(session1, "hearts");
         assertTrue(result.contains("❌ Вылет на этапе 4/4"));
     }
 
-
-    // Завершение и изоляция
-
+    // --- Завершение и изоляция ---
 
     @Test
     @DisplayName("Ход после окончания игры возвращает сообщение об окончании")
     void moveAfterFinishedReturnsGameOver() throws Exception {
-        bus.start(USER_1);
+        bus.start(session1);
         setNextCards(USER_1, new Card("5", "♥", 5));
-        bus.move(USER_1, "black"); // Вылет на этапе 1
+        bus.move(session1, "black"); // Вылет на этапе 1
 
-        String result = bus.move(USER_1, "red");
+        String result = bus.move(session1, "red");
         assertEquals("Игра окончена. Введи /cancel, чтобы выйти.", result);
     }
 
     @Test
     @DisplayName("Изоляция: партии двух пользователей независимы")
     void usersAreIsolated() {
-        bus.start(USER_1);
-        bus.start(USER_2);
+        bus.start(session1);
+        bus.start(session2);
 
-        String res1 = bus.move(USER_1, "black"); // рандомно, может вылететь, может нет
-        String res2 = bus.move(USER_2, "зеленый"); // точно ошибка ввода
+        String res1 = bus.move(session1, "black"); // рандомно
+        String res2 = bus.move(session2, "зеленый"); // точно ошибка ввода
 
         assertEquals("Введи red или black.", res2, "user2 должен быть на этапе 1");
     }

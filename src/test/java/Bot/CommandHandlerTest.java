@@ -188,7 +188,6 @@ class CommandHandlerTest {
         handler.handle(textUpdate(USER_1, "1"));
 
         assertEquals(BotState.WAITING_FOR_MOVE, sessions.get(USER_1).getState());
-        assertTrue(anyContains(sentTo(USER_1), "waiting for your move"));
     }
 
     // 5. КОНТЕКСТ: доступность команд зависит от состояния

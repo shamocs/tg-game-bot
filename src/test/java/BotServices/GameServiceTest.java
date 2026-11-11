@@ -16,106 +16,86 @@ class GameServiceTest {
         service = new GameService();
     }
 
-    // 1. getGamesList — формат и порядок
-
     @Test
     @DisplayName("getGamesList содержит 'blackjack' и 'ride the bus'")
     void gamesListContainsKnownGames() {
         String list = service.getGamesList();
-
         assertTrue(list.contains("blackjack"));
         assertTrue(list.contains("ride the bus"));
     }
 
     @Test
-    @DisplayName("getGamesList нумерует с 1: '1) blackjack', '2) ride the bus'")
+    @DisplayName("getGamesList нумерует с 1")
     void gamesListIsNumbered() {
         String list = service.getGamesList();
-
-        assertTrue(list.contains("1) blackjack"),
-                "должно быть '1) blackjack', было:\n" + list);
-        assertTrue(list.contains("2) ride the bus"),
-                "должно быть '2) ride the bus', было:\n" + list);
+        assertTrue(list.contains("1) blackjack"));
+        assertTrue(list.contains("2) ride the bus"));
     }
 
     @Test
-    @DisplayName("Порядок игр стабилен (LinkedHashMap): blackjack раньше other")
+    @DisplayName("Порядок игр стабилен")
     void gamesListOrderIsStable() {
         String list = service.getGamesList();
-
-        int idxBlackjack = list.indexOf("blackjack");
-        int idxOther     = list.indexOf("ride the bus");
-
-        assertTrue(idxBlackjack >= 0 && idxOther >= 0);
-        assertTrue(idxBlackjack < idxOther,
-                "blackjack должен идти первым (LinkedHashMap)");
+        assertTrue(list.indexOf("blackjack") < list.indexOf("ride the bus"));
     }
-
-    // 2. startGame — корректный / некорректный gameId
 
     @Test
     @DisplayName("startGame('nonexistent') → 'Неизвестная игра'")
     void startUnknownGameReturnsError() {
-        assertEquals("Неизвестная игра", service.startGame("nonexistent", 1L));
+        assertEquals("Неизвестная игра", service.startGame("nonexistent", new GameSession(1L)));
     }
 
     @Test
-    @DisplayName("startGame(null) → 'Неизвестная игра' (не падает)")
+    @DisplayName("startGame(null) → 'Неизвестная игра'")
     void startNullGameReturnsError() {
-        assertEquals("Неизвестная игра", service.startGame(null, 1L));
+        assertEquals("Неизвестная игра", service.startGame(null, new GameSession(1L)));
     }
 
     @Test
     @DisplayName("startGame('') → 'Неизвестная игра'")
     void startEmptyGameReturnsError() {
-        assertEquals("Неизвестная игра", service.startGame("", 1L));
+        assertEquals("Неизвестная игра", service.startGame("", new GameSession(1L)));
     }
 
     @Test
-    @DisplayName("startGame('BLACKJACK') → 'Неизвестная игра' (регистр важен)")
+    @DisplayName("startGame('BLACKJACK') → 'Неизвестная игра'")
     void startGameIsCaseSensitive() {
-        // gameId хранится как "blackjack" (lower case), поэтому "BLACKJACK" не найдётся
-        assertEquals("Неизвестная игра", service.startGame("BLACKJACK", 1L));
+        assertEquals("Неизвестная игра", service.startGame("BLACKJACK", new GameSession(1L)));
     }
-
-    // 3. handleMove — корректный / некорректный gameId
 
     @Test
     @DisplayName("handleMove('nonexistent') → 'Неизвестная игра'")
     void moveUnknownGameReturnsError() {
-        assertEquals("Неизвестная игра", service.handleMove("nonexistent", 1L, "hit"));
+        assertEquals("Неизвестная игра", service.handleMove("nonexistent", new GameSession(1L), "hit"));
     }
 
     @Test
-    @DisplayName("handleMove(null) → 'Неизвестная игра' (не падает)")
+    @DisplayName("handleMove(null) → 'Неизвестная игра'")
     void moveNullGameReturnsError() {
-        assertEquals("Неизвестная игра", service.handleMove(null, 1L, "hit"));
+        assertEquals("Неизвестная игра", service.handleMove(null, new GameSession(1L), "hit"));
     }
 
     @Test
     @DisplayName("handleMove('') → 'Неизвестная игра'")
     void moveEmptyGameReturnsError() {
-        assertEquals("Неизвестная игра", service.handleMove("", 1L, "hit"));
+        assertEquals("Неизвестная игра", service.handleMove("", new GameSession(1L), "hit"));
     }
-
-    // 4. Делегирование известным играм — не падает
 
     @Test
     @DisplayName("startGame('blackjack') делегирует без исключений")
     void startKnownGameDelegates() {
-        assertDoesNotThrow(() -> service.startGame("blackjack", 1L),
-                "startGame не должен бросать исключение для зарегистрированной игры");
+        assertDoesNotThrow(() -> service.startGame("blackjack", new GameSession(1L)));
     }
 
     @Test
     @DisplayName("handleMove('blackjack', ...) делегирует без исключений")
     void moveKnownGameDelegates() {
-        assertDoesNotThrow(() -> service.handleMove("blackjack", 1L, "hit"));
+        assertDoesNotThrow(() -> service.handleMove("blackjack", new GameSession(1L), "hit"));
     }
 
     @Test
-    @DisplayName("startGame('other') тоже работает (не только blackjack)")
+    @DisplayName("startGame('ride the bus') тоже работает")
     void startOtherGameDelegates() {
-        assertDoesNotThrow(() -> service.startGame("other", 1L));
+        assertDoesNotThrow(() -> service.startGame("ride the bus", new GameSession(1L)));
     }
 }
