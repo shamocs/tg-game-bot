@@ -70,6 +70,7 @@ public class CommandHandler {
                 break;
 
             case GAME_OVER:
+
                 if (text.equals("/cancel")) {
                     handleCancel(chatId);
                 } else {
@@ -101,8 +102,9 @@ public class CommandHandler {
                 return;
         }
         sessions.transition(chatId, BotState.WAITING_FOR_MOVE);
-        bot.sendText(chatId, gameService.startGame(gameId, chatId));
-        bot.sendText(chatId, "waiting for your move!");
+
+        GameSession session = sessions.get(chatId);
+        bot.sendText(chatId, gameService.startGame(gameId, session));
     }
 
     private void handleLose(long chatId) {
@@ -111,16 +113,32 @@ public class CommandHandler {
     }
 
     private void handleGameOver(long chatId, String text) {
+        // 1. Игрок хочет выбрать другую игру
         if (text.equals("/play")) {
             sessions.transition(chatId, BotState.CHOOSING_GAME);
             bot.sendText(chatId, "Выбери игру:\n" + gameService.getGamesList());
             return;
         }
-        bot.sendText(chatId, "Игра окончена.\n/play — новая игра\n/cancel — выход");
+
+        if (text.equals("ещё") || text.equals("еще") || text.equals("ещё раз")) {
+            sessions.transition(chatId, BotState.WAITING_FOR_MOVE);
+            GameSession session = sessions.get(chatId);
+            bot.sendText(chatId, gameService.startGame("blackjack", session));
+            return;
+        }
+
+        bot.sendText(chatId, "Игра окончена.\nНапиши 'ещё' — сыграть ещё раз\n/play — другая игра\n/cancel — выход");
     }
 
     private void handleMove(long chatId, String text) {
-        String reply = gameService.handleMove("blackjack", chatId, text);
+        GameSession session = sessions.get(chatId);
+        String reply = gameService.handleMove("blackjack", session, text);
+
+        if (reply.contains("выиграл") || reply.contains("проиграл") || reply.contains("Ничья") || reply.contains("Перебор")) {
+            sessions.transition(chatId, BotState.GAME_OVER);
+            reply += "\n\n---\nНапиши 'ещё', чтобы сыграть ещё раз.\n/play — выбрать другую игру.\n/cancel — выйти в меню.";
+        }
+
         bot.sendText(chatId, reply);
     }
 

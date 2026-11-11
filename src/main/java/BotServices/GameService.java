@@ -1,11 +1,9 @@
 package BotServices;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import Games.Game;
 import Games.BlackJack;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class GameService {
     private final Map<String, Game> games = new LinkedHashMap<>();
@@ -25,15 +23,15 @@ public class GameService {
         return result;
     }
 
-    public String startGame(String gameId, long userId) {
+    public String startGame(String gameId, GameSession session) {
         Game g = games.get(gameId);
         if (g == null) return "Неизвестная игра";
-        return g.start(userId);
+        return g.start(session);
     }
 
-    public String handleMove(String gameId, long userId, String text) {
+    public String handleMove(String gameId, GameSession session, String text) {
         Game g = games.get(gameId);
         if (g == null) return "Неизвестная игра";
-        return g.move(userId, text);
+        return g.move(session, text);
     }
 }
