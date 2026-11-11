@@ -19,23 +19,23 @@ class GameServiceTest {
     // 1. getGamesList — формат и порядок
 
     @Test
-    @DisplayName("getGamesList содержит 'blackjack' и 'other'")
+    @DisplayName("getGamesList содержит 'blackjack' и 'ride the bus'")
     void gamesListContainsKnownGames() {
         String list = service.getGamesList();
 
         assertTrue(list.contains("blackjack"));
-        assertTrue(list.contains("other"));
+        assertTrue(list.contains("ride the bus"));
     }
 
     @Test
-    @DisplayName("getGamesList нумерует с 1: '1) blackjack', '2) other'")
+    @DisplayName("getGamesList нумерует с 1: '1) blackjack', '2) ride the bus'")
     void gamesListIsNumbered() {
         String list = service.getGamesList();
 
         assertTrue(list.contains("1) blackjack"),
                 "должно быть '1) blackjack', было:\n" + list);
-        assertTrue(list.contains("2) other"),
-                "должно быть '2) other', было:\n" + list);
+        assertTrue(list.contains("2) ride the bus"),
+                "должно быть '2) ride the bus', было:\n" + list);
     }
 
     @Test
@@ -44,7 +44,7 @@ class GameServiceTest {
         String list = service.getGamesList();
 
         int idxBlackjack = list.indexOf("blackjack");
-        int idxOther     = list.indexOf("other");
+        int idxOther     = list.indexOf("ride the bus");
 
         assertTrue(idxBlackjack >= 0 && idxOther >= 0);
         assertTrue(idxBlackjack < idxOther,
