@@ -94,13 +94,14 @@ public class CommandHandler {
         switch (text) {
             case "1": gameId = "blackjack";
             break;
-            case "2": gameId = "other";
+            case "2": gameId = "ride the bus";
             break;
             default:
                 bot.sendText(chatId, "Выберите номер игры!");
                 return;
         }
         sessions.transition(chatId, BotState.WAITING_FOR_MOVE);
+        sessions.get(chatId).setCurrentGame(gameId);
         bot.sendText(chatId, gameService.startGame(gameId, chatId));
         bot.sendText(chatId, "waiting for your move!");
     }
@@ -120,8 +121,14 @@ public class CommandHandler {
     }
 
     private void handleMove(long chatId, String text) {
-        String reply = gameService.handleMove("blackjack", chatId, text);
-        bot.sendText(chatId, reply);
+        GameSession session = sessions.get(chatId);
+        String gameId = session != null ? session.getCurrentGame() : null;
+
+        if (gameId == null) {
+            bot.sendText(chatId, "Игра не начата. Введи /cancel и /play.");
+            return;
+        }
+        bot.sendText(chatId, gameService.handleMove(gameId, chatId, text));
     }
 
     private void parseCommand(long chatId, String text) {
